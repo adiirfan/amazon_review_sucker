@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row" v-if="!loading">
         <div class="col-md-12">
             <h3 class="text-xs-center text-md-left">Review List</h3>
         </div>
@@ -32,8 +32,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-muted">
-                    <review-tags :tags="getTags()"></review-tags>
+                <div class="card-footer text-muted" v-if="tagList">
+                    <review-tags :id="review.id" :tagList="tagList"></review-tags>
                 </div>
             </div>
         </div>
@@ -51,6 +51,7 @@
                 page: 1,
                 star:"",
                 verif:"",
+                tagList:false,
 
             };
         },
@@ -58,19 +59,28 @@
             VueTagsInput,
             reviewTags,
         },
-
+        mounted(){
+            this.getTagList();
+        },
         methods:{
-            store(n,newTags){
-
-            },
-            getTags(){
-                return [
-                    [{"text":"test","tiClasses":["ti-valid"]},{"text":"testing","tiClasses":["ti-valid"]},{"text":"wkwkwkwkwk","tiClasses":["ti-valid"]}]
-                ]
-            },
+            async getTagList(){
+                await this.$http.get('/tags')
+                    .then(response => {
+                        this.tagList = response.data
+                        console.log(this.tagList)
+                    })
+                    .catch(error => {
+                        if(error.response.status === 401){
+                            window.location.href = '/login'
+                        }else{
+                            window.location.href = '/'
+                        }
+                    })
+            }
         },
         props:[
-            'data'
+            'data',
+            'loading'
         ]
     }
 </script>

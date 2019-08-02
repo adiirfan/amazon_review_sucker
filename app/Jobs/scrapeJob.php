@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\QueueStatus;
+use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Support\Facades\Log;
 
@@ -48,16 +49,31 @@ class scrapeJob implements ShouldQueue
         $page = 1;
         $x = false;
         $failed = 0;
+        $product = false;
         while(!$x) {
             $crawler = $this->goutte->request('GET', 'https://www.amazon.com/product-reviews/' . $this->ASIN . '/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&sortBy=recent&pageNumber=' . $page);
             if(!$crawler){
                 $x = false;
+            }
+            if(!$product){
+                $countproduct = $crawler->filter('a[data-hook="product-link"]')->count();
+                if($countproduct > 0){
+                    $productName = $this->getProductName($crawler);
+                    Product::where('ASIN',$this->ASIN)->update([
+                        'productName' => $productName
+                    ]);
+                    $product = true;
+                }
             }
             $count = $crawler->filter('div[data-hook="review"] ')->count();
             if($count < 1){
                 $countend = $crawler->filter('div[class="a-section a-spacing-top-large a-text-center no-reviews-section"]')->count();
                 if($countend > 0){
                     $x = true;
+                }
+                $check404 = $crawler->filter('img[alt="Dogs of Amazon"]')->count();
+                if($check404 > 0){
+
                 }
                 $failed++;
                 if($failed > 10){
@@ -143,6 +159,10 @@ class scrapeJob implements ShouldQueue
             return 1;
         }
         return 0;
+    }
+    public function getProductName($crawler){
+        $data = $crawler->filter('a[data-hook="product-link"]')->text();
+        return $data;
     }
 }
 

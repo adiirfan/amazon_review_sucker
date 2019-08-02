@@ -16,4 +16,5 @@
 Route::get('login/facebook', 'API\UserController@redirectToProvider');
 Route::get('login/facebook/callback', 'API\UserController@handleProviderCallback');
 Route::get('/{any}', 'SpaController@index')->where('any', '.*');
+Route::get('/{any}/{any}', 'SpaController@index')->where('any', '.*');
 

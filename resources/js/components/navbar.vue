@@ -9,13 +9,13 @@
                             <li :class="$route.name === 'home' ? 'active' : ''">
                                 <router-link :to="{ name: 'home' }">Home</router-link>
                             </li>
-                            <li :class="$route.name === 'hello' ? 'active' : ''">
-                                <router-link :to="{ name: 'hello' }">Hello World</router-link>
+                            <li :class="$route.name === 'analyze' || $route.name === 'analyzeDetail'  ? 'active' : ''">
+                                <router-link :to="{ name: 'analyze' }">Analyze</router-link>
                             </li>
                         </ul>
                         <div class="navbar-right">
-                            <a href="/getting-started/#download" class="btn btn-success navbar-btn">
-                                Download
+                            <a v-on:click="logout" class="btn btn-success navbar-btn">
+                                Log Out
                             </a>
                         </div>
                 </div>
@@ -23,10 +23,15 @@
         </div>
     </header>
 </template>
-
 <script>
     export default {
-        name: "navbar"
+        name: "navbar",
+        methods:{
+            logout(){
+                localStorage.removeItem('token');
+                window.location.href = '/login'
+            }
+        }
     }
 </script>
 

@@ -3,12 +3,12 @@
         <div class="col-md-12 ">
             <h3>Add Product</h3>
             <div class="form-group has-focus detach-feedback m-y-2">
-                <div class="input-group">
+                <label v-if="error === 1" class="control-label" for="addProduct">
+                    {{errorMsg}}
+                </label>
+                <div class="input-group" :class="error === 1 ? 'has-error' : ''">
                     <input type="text" class="form-control"
-                           aria-describedby="detached-help-feedback" v-model="ASIN" placeholder="add product ASIN" v-on:keypress.enter="addProduct()">
-                    <div class="input-group-btn">
-                        <button class="btn btn-addon">Add</button>
-                    </div>
+                           aria-describedby="detached-help-feedback" id="addProduct" aria-invalid="true" v-model="ASIN" placeholder="add product ASIN" v-on:keypress.enter="addProduct()">
                 </div>
             </div>
         </div>
@@ -21,6 +21,8 @@
         data(){
             return{
                 ASIN:'',
+                error:0,
+                errorMsg:''
             }
         },
         methods:{
@@ -29,11 +31,16 @@
                     ASIN: this.ASIN,
                     })
                     .then(response => {
-                        console.log(response.data)
+                        window.location.href = '/'+this.ASIN
                     })
                     .catch(error => {
-                        console.log(error)
-
+                        if(error.response.status === 401){
+                            window.location.href = '/login'
+                        }else{
+                            this.error = 1;
+                            this.errorMsg = error.response.data.errors
+                            console.log(error.response.data)
+                        }
                     })
                     .finally(() => this.loading = false)
             }

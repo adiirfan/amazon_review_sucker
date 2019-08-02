@@ -113,8 +113,11 @@
                         this.avg = response.data.avg
                     })
                     .catch(error => {
-                        console.log(error)
-
+                        if(error.response.status){
+                            window.location.href = '/login'
+                        }else{
+                            window.location.href = '/'
+                        }
                     })
                     .finally(() => this.loading = false)
             },
@@ -124,7 +127,11 @@
                         this.sumData = response.data
                     })
                     .catch(error => {
-                        console.log(error)
+                        if(error.response.status){
+                            window.location.href = '/login'
+                        }else{
+                            window.location.href = '/'
+                        }
                     })
                     .finally(() => this.loading = false )
             },

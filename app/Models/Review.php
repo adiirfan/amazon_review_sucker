@@ -21,7 +21,12 @@ class Review extends Model
         'isVideo',
         'isImage'
     ];
-
+    public function tags(){
+        return $this->hasMany(TagsReview::class,'reviewId','id');
+    }
+    public function product(){
+        return $this->hasOne(Product::class,'ASIN','ASIN')->select(['ASIN','productName']);
+    }
     public function scopeFilterStar($query,$data){
         $filter = json_decode($data);
         $query->whereIn('rating',$filter);

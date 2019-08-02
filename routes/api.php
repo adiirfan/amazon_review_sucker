@@ -23,6 +23,9 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('product/{ASIN}/review', 'API\ReviewController@index');
     Route::get('product/{ASIN}/avg', 'API\ReviewController@getAVG');
     Route::get('product/{ASIN}/total', 'API\ReviewController@getSumTotal');
+    Route::get('tags/', 'API\TagsController@tagIndex');
+    Route::get('tags/analyze', 'API\TagsController@analyzeTags');
+    Route::get('tags/analyze/{tags}/list', 'API\TagsController@reviewByTags');
     Route::post('tags/{reviewId}/add', 'API\TagsController@insertTags');
     Route::get('tags/review/{id}', 'API\TagsController@getTagsReview');
     Route::post('tagsreview/{id}/delete', 'API\TagsController@deleteTagsReview');
