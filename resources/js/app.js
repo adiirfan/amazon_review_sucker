@@ -20,6 +20,7 @@ import register from './views/register'
 var token = localStorage.getItem('token')
 const base = axios.create({
     baseURL: 'https://demo.adiirfan.com/api',
+    //baseURL: 'http://127.0.0.1:8000/api',
     headers: {
         Authorization: 'Bearer '+ token
     }
@@ -37,12 +38,12 @@ const router = new VueRouter({
         },
         {
             path: '/login',
-            name: 'guest:login',
+            name: 'login',
             component: Login
         },
         {
             path: '/register',
-            name: 'guest:register',
+            name: 'login',
             component: register
         },
         {

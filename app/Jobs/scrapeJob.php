@@ -12,7 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\QueueStatus;
 use App\Models\Product;
 use App\Models\Review;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class scrapeJob implements ShouldQueue
 {
@@ -22,13 +22,6 @@ class scrapeJob implements ShouldQueue
     public function __construct($asin)
     {
         $this->ASIN = $asin;
-        $this->goutte = new Client([
-            'proxy' => 'tcp://125.25.54.65:47000',
-        ]);
-        $rand = rand(1,2);
-        $user_agent[2] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
-        $user_agent[1] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36';
-        $this->goutte->setHeader('User-Agent', $user_agent[$rand]);
     }
     /**
      * Create a new job instance.
@@ -47,10 +40,14 @@ class scrapeJob implements ShouldQueue
             'queueStatus' => 1,
         ]);
         $page = 1;
+        if (Cache::has($this->ASIN.'_page')) {
+            $page = Cache::get($this->ASIN.'_page');
+        }
         $x = false;
         $failed = 0;
         $product = false;
         while(!$x) {
+            $this->reGoutte();
             $crawler = $this->goutte->request('GET', 'https://www.amazon.com/product-reviews/' . $this->ASIN . '/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&sortBy=recent&pageNumber=' . $page);
             if(!$crawler){
                 $x = false;
@@ -77,7 +74,8 @@ class scrapeJob implements ShouldQueue
                 }
                 $failed++;
                 if($failed > 10){
-                    sleep(2);
+                    sleep(10);
+                    $this->reGoutte();
                     $failed = 0;
                 }
                 continue;
@@ -100,9 +98,11 @@ class scrapeJob implements ShouldQueue
                 ];
                 Review::create($dataCrawl);
             }
-            sleep(2);
+            sleep(10);
             $page++;
+            Cache::forever($this->ASIN.'_page', $page);
         }
+        Cache::forget($this->ASIN.'_page');
         QueueStatus::where('ASIN',$this->ASIN)->update([
             'queueStatus' => 2,
         ]);
@@ -163,6 +163,27 @@ class scrapeJob implements ShouldQueue
     public function getProductName($crawler){
         $data = $crawler->filter('a[data-hook="product-link"]')->text();
         return $data;
+    }
+    function reGoutte(){
+        $rand = rand(0,3);
+        $proxyList = [
+            'tcp://125.25.54.65:47000',
+            'tcp://103.94.5.54:8080',
+            'tcp://38.134.10.106:53281',
+            'tcp://103.211.232.92:53281'
+        ];
+        $user_agent = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3861.0 Safari/537.36 Edg/77.0.230.2',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36',
+            'Mozilla/5.0 (Linux; Android 9; SM-G960F Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
+        ];
+
+        $this->goutte = new Client([
+            'proxy' => $proxyList[$rand],
+        ]);
+        $this->goutte->setHeader('User-Agent', $user_agent[$rand]);
+        return true;
     }
 }
 
