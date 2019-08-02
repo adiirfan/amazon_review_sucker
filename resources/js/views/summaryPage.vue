@@ -86,7 +86,6 @@
                         if (response.data.hasOwnProperty('queue')) {
                             this.data = response.data
                             this.status = response.data.queue.queueStatus;
-                            console.log(this.status)
                         }
                     })
                     .catch(error => {

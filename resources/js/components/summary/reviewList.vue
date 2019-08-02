@@ -67,7 +67,6 @@
                 await this.$http.get('/tags')
                     .then(response => {
                         this.tagList = response.data
-                        console.log(this.tagList)
                     })
                     .catch(error => {
                         if(error.response.status === 401){

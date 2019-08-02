@@ -137,7 +137,6 @@
             },
             addStarFilter(data){
                 this.filterStar.push(data)
-                console.log(this.filterStar)
             },
             check(data){
                 let isInArray = this.filterStar.includes(data);

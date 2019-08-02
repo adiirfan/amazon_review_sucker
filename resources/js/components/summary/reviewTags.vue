@@ -50,7 +50,6 @@
                     tagsName: obj.tag.text,
                 }).then(response => {
                     obj.tag.id = response.data.data.id;
-                    console.log(obj.tag)
                     obj.addTag();
                 }).catch(error => {
                     if(error.response.status === 401){
@@ -79,7 +78,6 @@
                 if(this.data.length > 0) {
                     var i;
                     for (i = 0; i < this.data.length; i++) {
-                        console.log(i)
                         var data = {
                             "text": this.data[i].tags_review.tagsName,
                             "tiClasses": ["ti-valid"],

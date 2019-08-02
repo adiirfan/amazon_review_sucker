@@ -39,7 +39,6 @@
                         }else{
                             this.error = 1;
                             this.errorMsg = error.response.data.errors
-                            console.log(error.response.data)
                         }
                     })
                     .finally(() => this.loading = false)
