@@ -19,7 +19,7 @@ class UserProduct extends Model
     }
     public function product()
     {
-        return $this->hasOne(Product::class, 'ASIN','ASIN')->select(['ASIN','productName','id']);
+        return $this->hasOne(Product::class, 'ASIN','ASIN')->select(['ASIN','productName','id','productUrl']);
     }
     public function queue()
     {

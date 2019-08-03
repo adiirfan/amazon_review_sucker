@@ -55,9 +55,9 @@ class scrapeJob implements ShouldQueue
             if(!$product){
                 $countproduct = $crawler->filter('a[data-hook="product-link"]')->count();
                 if($countproduct > 0){
-                    $productName = $this->getProductName($crawler);
                     Product::where('ASIN',$this->ASIN)->update([
-                        'productName' => $productName
+                        'productName' => $this->getProductName($crawler),
+                        'productUrl' => $this->getProductUrl($crawler)
                     ]);
                     $product = true;
                 }
@@ -179,6 +179,10 @@ class scrapeJob implements ShouldQueue
     function getProductName($crawler){
         $data = $crawler->filter('a[data-hook="product-link"]')->text();
         return $data;
+    }
+    function getProductUrl($crawler){
+        $data = $crawler->filter('a[data-hook="product-link"]')->attr('href');
+        return 'https://www.amazon.com/'. $data;
     }
     function reGoutte(){
         $rand = rand(0,3);

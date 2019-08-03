@@ -8,7 +8,9 @@
                 <div class="col-md-12 m-y-3">
                     <div class="card">
                         <div class="card-body" v-if="sumData">
-                            <h2 class="panel-title">{{product.ASIN}}</h2>
+                            <a v-if="product.product.productUrl" target="_blank" :href="product.product.productUrl">
+                                <h2 class="panel-title">{{product.ASIN}}</h2>
+                            </a>
                             <p>{{product.product.productName}}</p>
                             <div class="row">
                                 <div class="col-md-3">
