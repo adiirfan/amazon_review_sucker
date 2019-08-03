@@ -26,6 +26,12 @@
 <script>
     export default {
         name: "navbar",
+        mounted(){
+            var token = localStorage.getItem('token')
+            if(token === null){
+                window.location.href = '/login'
+            }
+        },
         methods:{
             logout(){
                 localStorage.removeItem('token');
