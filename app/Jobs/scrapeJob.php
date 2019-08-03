@@ -95,6 +95,7 @@ class scrapeJob implements ShouldQueue
                     'comment' => $this->getCommentTotal($crawl),
                     'isVideo' => $this->isVideo($crawl),
                     'isImage' => $this->isImage($crawl),
+                    'votes' => $this->helpful($crawl),
                 ];
                 Review::create($dataCrawl);
             }
@@ -153,14 +154,29 @@ class scrapeJob implements ShouldQueue
         }
         return 0;
     }
-    public function isImage($crawler){
+    function helpful($crawler){
+        $data = $crawler->filter('span[data-hook="helpful-vote-statement"]')->count();
+        if($data > 0){
+            $data = $crawler->filter('span[data-hook="helpful-vote-statement"]')->text();
+            $votes = explode(' ',$data);
+            if($votes[0] == 'One'){
+                return 1;
+            }
+            if($votes[0] == 'Two'){
+                return 2;
+            }
+            return $votes[0];
+        }
+        return 0;
+    }
+    function isImage($crawler){
         $data = $crawler->filter('div[class="review-image-tile-section"]')->count();
         if($data > 0){
             return 1;
         }
         return 0;
     }
-    public function getProductName($crawler){
+    function getProductName($crawler){
         $data = $crawler->filter('a[data-hook="product-link"]')->text();
         return $data;
     }

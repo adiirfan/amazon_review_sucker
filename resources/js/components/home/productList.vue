@@ -37,7 +37,7 @@
                         if(error.response.status === 401){
                             window.location.href = '/login'
                         }else{
-                            window.location.href = '/'
+                            //window.location.href = '/'
                         }
                     })
                     .finally(() => this.loading = false)

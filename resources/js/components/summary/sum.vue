@@ -9,10 +9,10 @@
                     <div class="card">
                         <div class="card-body" v-if="sumData">
                             <h2 class="panel-title">{{product.ASIN}}</h2>
-                            <!--p>213123123</p!-->
+                            <p>{{product.product.productName}}</p>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <p>Average Star : {{avg}}</p>
+                                    <p>Average Star : {{(avg).toFixed(2)}}</p>
                                 </div>
                                 <div class="col-md-3">
                                     <p >Total Review : {{sumData.totalReview}}</p>

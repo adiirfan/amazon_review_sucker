@@ -56,12 +56,8 @@
                         window.location.href = '/'
                     })
                     .catch(error => {
-                        if(error.response.status === 401){
-                            window.location.href = '/login'
-                        }else{
-                            this.error = 1;
-                            this.errorMsg = error.response.data.errors
-                        }
+                        this.error = 1;
+                        this.errorMsg = error.response.data.errors
                     })
                     .finally(() => this.loading = false)
             }

@@ -19,7 +19,8 @@ class Review extends Model
         'reviewDate',
         'comment',
         'isVideo',
-        'isImage'
+        'isImage',
+        'votes'
     ];
     public function tags(){
         return $this->hasMany(TagsReview::class,'reviewId','id');

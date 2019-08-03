@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h4 class="panel-title">{{review.title}}</h4>
+                            <a :href="review.reviewUrl" target="_blank"><h4 class="panel-title">{{review.title}}</h4> </a>
                             <p>{{review.body}}</p>
                         </div>
                     </div>
@@ -17,9 +17,9 @@
                             <span>
                                 <star-rating :star-size=20 read-only :rating=review.rating :show-rating=false ></star-rating>
                             </span>
-                            <span>
+                            <a :href="review.authorUrl" target="_blank"> <span>
                                 By {{review.author}} <br>
-                            </span>
+                            </span> </a>
                             <span>
                                 {{review.reviewDate}}<br>
                             </span>
@@ -27,7 +27,7 @@
                                 {{review.comment}} Comments <br>
                             </span>
                             <span>
-                                7 Helpful Votes <br>
+                                 {{helfulvotes(review.votes)}} Helpful Votes <br>
                             </span>
                         </div>
                     </div>
@@ -72,9 +72,15 @@
                         if(error.response.status === 401){
                             window.location.href = '/login'
                         }else{
-                            window.location.href = '/'
+                            //window.location.href = '/'
                         }
                     })
+            },
+            helfulvotes(data){
+                if(data === null){
+                    return 0;
+                }
+                return data
             }
         },
         props:[
