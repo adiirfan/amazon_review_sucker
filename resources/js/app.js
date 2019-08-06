@@ -20,7 +20,7 @@ import register from './views/register'
 var token = localStorage.getItem('token')
 const base = axios.create({
     //baseURL: 'https://demo.adiirfan.com/api',
-    baseURL: 'http://127.0.0.1:8000/api',
+    baseURL: process.env.MIX_APP_URL,
     headers: {
         Authorization: 'Bearer '+ token
     }
